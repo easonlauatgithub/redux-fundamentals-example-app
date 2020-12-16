@@ -14,8 +14,10 @@ function nextTodoId(todos) {
   const maxId = todos.reduce((maxId, todo) => Math.max(todo.id, maxId), -1)
   return maxId + 1
 }
+export const selectStatus = state => {
+  return state.todos.status
+}
 export const selectTodos = state => {
-  console.log(state);
   return state.todos.entities
 }
 export const selectTodoById = (state, todoId) => {
@@ -96,8 +98,18 @@ export default function todosReducer(state = initialState, action) {
               })
             }
         }
+        case 'todos/todosLoading': {
+          return {
+            ...state,
+            status: 'loading'
+          }
+        }
         case 'todos/todosLoaded': {
-          return {status: "idle", entities: action.payload}
+          return {
+            ...state,
+            status: "idle", 
+            entities: action.payload
+          }
         }            
         default:
             return state
@@ -119,6 +131,7 @@ export function fetchTodos2() {
 }
 // Same thing as the above example!
 export const fetchTodos = () => async dispatch => {
+  dispatch(todosLoading())
   const response = await client.get('/fakeApi/todos')
   dispatch(todosLoaded(response.todos))
 }
@@ -135,6 +148,11 @@ export function saveNewTodo(text) {
 }
 
 //ACTION CREATOR
+export const todosLoading = () => {
+  return {
+    type: 'todos/todosLoading'
+  }
+}
 export const todosLoaded = todos => {
   return {
     type: 'todos/todosLoaded',
