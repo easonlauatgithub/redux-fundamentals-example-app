@@ -2,20 +2,22 @@ import { client } from '../../api/client'
 import { createSelector } from 'reselect'
 import { StatusFilters } from '../filters/filtersSlice'
 
-const initialState = [
-    // { id: 0, text: 'Learn React', completed: true },
-    // { id: 1, text: 'Learn Redux', completed: false, color: 'purple' },
+const initialState = {
+  status: 'idle',
+  entities: [
     // { id: 2, text: 'Build something fun!', completed: false, color: 'blue' }
-]
+  ]
+}
  
 //COMMON FUNCTION 
 function nextTodoId(todos) {
   const maxId = todos.reduce((maxId, todo) => Math.max(todo.id, maxId), -1)
   return maxId + 1
 }
-
-export const selectTodos = state => state.todos
-
+export const selectTodos = state => {
+  console.log(state);
+  return state.todos.entities
+}
 export const selectTodoById = (state, todoId) => {
   return selectTodos(state).find(todo => todo.id === todoId)
 }
@@ -23,8 +25,10 @@ export const selectTodoById = (state, todoId) => {
 export default function todosReducer(state = initialState, action) {
     switch (action.type) {
         case 'todos/todoAdded': {
-          // Return a new todos state array with the new todo item at the end
-          return [...state, action.payload]
+          return {
+            ...state,
+            entities: [...state.entities, action.payload]
+          }
         }
         case 'todos/todoAdded2': {
             // Can return just the new todos array - no extra object around it
@@ -38,43 +42,62 @@ export default function todosReducer(state = initialState, action) {
             ]
         }
         case 'todos/todoToggled': {
-            return state.map(todo => {
+          return {
+            ...state,
+            entities: state.entities.map(todo => {
               if (todo.id !== action.payload) {
                 return todo
               }
-      
+    
               return {
                 ...todo,
                 completed: !todo.completed
               }
             })
+          }
         }
         case 'todos/colorSelected': {
             const { color, todoId } = action.payload
-            return state.map((todo) => {
-              if (todo.id !== todoId) {
-                return todo
-              }
-      
-              return {
-                ...todo,
-                color,
-              }
-            })
+            return {
+              ...state,
+              entities: state.entities.map((todo) => {
+                if (todo.id !== todoId) {
+                  return todo
+                }
+        
+                return {
+                  ...todo,
+                  color,
+                }
+              })
+            }
         }
         case 'todos/todoDeleted': {
-            return state.filter((todo) => todo.id !== action.payload)
+            return {
+              ...state,
+              entities: state.entities.filter((todo) => {
+                return todo.id !== action.payload
+              })
+            }
         }
         case 'todos/allCompleted': {
-            return state.map((todo) => {
-              return { ...todo, completed: true }
-            })
+            return {
+              ...state,
+              entities: state.entities.map((todo) => {
+                return { ...todo, completed: true }
+              })
+            }
         }
         case 'todos/completedCleared': {
-            return state.filter((todo) => !todo.completed)
+            return {
+              ...state,
+              entities: state.entities.filter((todo) => {
+                return !todo.completed
+              })
+            }
         }
         case 'todos/todosLoaded': {
-          return action.payload
+          return {status: "idle", entities: action.payload}
         }            
         default:
             return state
@@ -160,5 +183,7 @@ export const selectFilteredTodoIds = createSelector(
   // Pass our other memoized selector as an input
   selectFilteredTodos,
   // And derive data in the output selector
-  filteredTodos => filteredTodos.map(todo => todo.id)
+  filteredTodos => { 
+    return filteredTodos.map(todo => todo.id) 
+  }
 )
