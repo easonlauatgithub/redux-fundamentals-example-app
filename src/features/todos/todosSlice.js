@@ -176,7 +176,7 @@ export const todoAdded1 = todo => {
 }
 export const todoAdded = todo => ({ type: 'todos/todoAdded', payload: todo })
 
-//MEMOIZED SELECTORS
+//MEMOIZED SELECTORS - CACHE
 export const selectTodoIds = createSelector(
   // First, pass one or more "input selector" functions:
   selectTodos,
