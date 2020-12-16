@@ -9,7 +9,7 @@ import store from './store'
 import { fetchTodos } from './features/todos/todosSlice'
 
 //able to dispatch(thunkFunction) after applyMiddleware(thunkMiddleware) in store.js
-store.dispatch(fetchTodos)
+store.dispatch(fetchTodos())
 
 ReactDOM.render(
   // Render a `<Provider>` around the entire `<App>`,
