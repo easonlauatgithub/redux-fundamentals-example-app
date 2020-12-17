@@ -23,7 +23,7 @@ const TodoListItem = ({ id }) => {
   }
   const handleColorChanged = (e) => {
     //onColorChange(e.target.value)
-    dispatch({ type: 'todos/colorSelected', payload: { color:e.target.value, todoId:todo.id } })
+    dispatch({ type: 'todos/todoColorSelected', payload: { color:e.target.value, todoId:todo.id } })
   }
   const onDelete = ()=>{
     dispatch({ type: 'todos/todoDeleted', payload: todo.id })

@@ -1,7 +1,11 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import TodoListItem from './TodoListItem'
-import { selectStatus, selectFilteredTodoIds } from './todosSlice'
+import { selectFilteredTodoIds } from './todosSlice'
+
+const selectStatus = state => {
+  return state.todos.status
+}
 
 const TodoList = () => {
   const todoIds = useSelector(selectFilteredTodoIds)
